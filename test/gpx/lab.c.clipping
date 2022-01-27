@@ -1,0 +1,103 @@
+/*
+ * lab.c.clipping
+ *
+ * Clipping laboratory.
+ * 
+ * MIT License (see: LICENSE)
+ * Copyright (c) 2021 Tomaz Stih
+ *
+ * 09.01.2022   tstih
+ *
+ */
+#include <stdint.h>
+#include <stdio.h>
+
+#include <partner.h>
+#include <gpx.h>
+
+/* Test glyph is a font. */
+uint8_t font_data[]={
+    0,      // class
+    15,     // w
+    15,     // h
+    65,     // first ascii
+    65,     // last ascii
+    7,      // glyph offset (2 bytes)
+    0,      // -"-
+    32,     // class             
+    15,     // width             
+    15,     // height     
+    
+    24,      // #moves = 27 * PROBLEM: 24
+    
+
+    // Disclaimer: to execute command you need n+1
+    14,     // 0:x origin
+    13,     // 1:y origin
+    156,    // 2:move dx=0, dy=-3, color=fore (set)
+    156,    // 3:move dx=0, dy=-3, color=fore (set)
+    156,    // 4:move dx=0, dy=-3, color=fore (set)
+    156,    // 5:move dx=0, dy=-3, color=fore (set)
+    226,    // 6:move dx=-3, dy=0, color=fore (set)
+    226,    // 7:move dx=-3, dy=0, color=fore (set)
+    226,    // 8:move dx=-3, dy=0, color=fore (set)
+    226,    // 9:move dx=-3, dy=0, color=fore (set)
+    162,    // 10: move dx=-1, dy=0, color=fore (set)
+    152,    // 11: move dx=0, dy=3, color=fore (set)
+    152,    // 12: move dx=0, dy=3, color=fore (set) 1,7
+    152,    // 13:move dx=0, dy=3, color=fore (set)
+    152,    // 14:move dx=0, dy=3, color=fore (set) 1.14
+    124,    // 15:move dx=3, dy=-3, color=none (move only!) 4,10
+    124,    // 16:move dx=3, dy=-3, color=none (move only!) 7,7 fiso
+    160,    // 17:move dx=1, dy=0, color=fore (set) out 8,7
+    136,    // 18:move dx=0, dy=1, color=fore (set) out 8,8
+    162,    // 19:move dx=-1, dy=0, color=fore (set) out 7,8
+    122,    // 20:move dx=-3, dy=3, color=none (move only!) 4,b in
+    122,    // 21:move dx=-3, dy=3, color=none (move only!) 1,e in
+    224,    // 22:move dx=3, dy=0, color=fore (set) 4,e in
+    224,    // 23:move dx=3, dy=0, color=fore (set) 7,e FISO
+    224,    // 24:move dx=3, dy=0, color=fore (set)
+    224,    // 25:move dx=3, dy=0, color=fore (set)
+    160     // 26:move dx=1, dy=0, color=fore (set)
+};
+
+/* Debug trace, 32 bytes. */
+extern void dtrace;
+
+void main() {
+
+    /* Clear text mode, hide cursor. */
+    clrscr();
+    setcursortype(NOCURSOR);
+
+    /* Enter graphics mode. Will clear screen. */
+    gpx_t *g=gpx_init();
+
+    /* Set clipping rect. */
+    rect_t clip_area = { 0,0,6,15 };
+    gpx_set_clip_area(g, &clip_area);
+
+    /* Draw glyph. */
+    font_t *font = (font_t *)&font_data;
+    gpx_draw_string(g,font,0,0,"A");
+
+    /* Wait for keypress */
+    while (!kbhit());
+
+    /* Clear graphics afterward. */
+    gpx_cls(g);
+
+    /* Leave graphics mode. */
+    gpx_exit(g);
+
+    /* And restore cursor. */
+    setcursortype(NORMALCURSOR);
+
+    /* Print debug trace. */
+    uint8_t *trace=(uint8_t *)&dtrace;
+    printf("\n\n");
+    for (uint8_t i=0;i<32;i++) {
+        printf("%02d:%02x  ",i,trace[i]);
+        if (i==15) printf("\n\n");
+    }
+}

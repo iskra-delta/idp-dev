@@ -1,0 +1,131 @@
+/*
+ * lab.c.clip-decode
+ *
+ * Clipping and decoding laboratory.
+ * 
+ * MIT License (see: LICENSE)
+ * copyright (c) 2021 tomaz stih
+ *
+ * 05.12.2021   tstih
+ *
+ */
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+
+#include <gpx.h>
+
+#pragma disable_warning 261
+
+/* Memory structure, used (internally) to 
+   clip tiny glyph. */
+typedef struct tiny_clip_s {
+    uint8_t x0;             
+    uint8_t y0;                     
+    uint8_t x1;
+    uint8_t y1;
+    uint8_t offset;
+    int8_t dx;
+    int8_t dy;
+    int8_t signx;
+    int8_t signy;
+    uint8_t clipstat;
+    uint8_t left;
+    uint8_t top;
+    uint8_t right;
+    uint8_t bottom;
+} tiny_clip_t;
+
+/* Test function. */
+extern uint16_t test(uint8_t move, tiny_clip_t *tiny);
+
+static tiny_clip_t tc;
+
+void status() {
+    printf("(%d,%d) -> (%d,%d) --- sign(%d,%d)=(%d,%d) --- offset=%d --- ",
+        tc.x0, tc.y0, tc.x1, tc.y1,
+        tc.dx, tc.dy, tc.signx, tc.signy,
+        tc.offset
+    );
+    printf("clip (%d,%d,%d,%d) is %d\n",
+        tc.left, tc.top, tc.right, tc.bottom, tc.clipstat
+    );
+}
+
+void main() {
+
+    /* clear memory */
+    memset(&tc, 0, sizeof(tiny_clip_t));
+
+    /* Enter graphic mode.  */
+    gpx_t *g=gpx_init();
+
+    /* Short command is in format 1xxxxxx1. 
+       bits: 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0
+             1 |  dx   |  dy   |sy |sx | 1
+    */
+    uint8_t cmd;
+
+    /*  
+        x0=2, y0=2
+        dx=2, dy=0
+        offset=3
+        clipping: pt0=1,pt1=1 (3)
+    */
+    tc.x0=2; tc.y0=2;
+    tc.left=0; tc.top=0; tc.right=10; tc.bottom=10;
+    cmd=0b11101101;
+    test(cmd,&tc);
+    status();
+
+    /*  
+        x0=3, y0=3
+        dx=-1, dy=1
+        offset=1
+        clipping: pt0=1,pt1=0 (1)
+    */
+    tc.x0=3; tc.y0=3;
+    tc.left=3; tc.top=3; tc.right=3; tc.bottom=4;
+    cmd=0b10101011;
+    test(cmd,&tc);
+    status();
+    
+    /*  
+        x0=2, y0=0
+        dx=1, dy=1
+        offset=1
+        clipping: pt0=0,pt1=0 (0)
+    */
+    tc.x0=0; tc.y0=0;
+    tc.left=4; tc.top=4; tc.right=6; tc.bottom=6;
+    cmd=0b10101001;
+    test(cmd,&tc);
+    status();
+    
+    /*  
+        x0=2, y0=2
+        dx=3, dy=3
+        offset=3
+        clipping: pt0=0,pt1=1 (2)
+    */
+    tc.x0=2; tc.y0=2;
+    tc.left=3; tc.top=3; tc.right=6; tc.bottom=6;
+    cmd=0b11111001;
+    test(cmd,&tc);
+    status();
+
+    /*  
+        x0=1, y0=4
+        dx=0, dy=3
+        offset=3
+        clipping: pt0=1,pt1=0 (1)
+    */
+    tc.x0=1; tc.y0=4;
+    tc.left=0; tc.top=0; tc.right=1; tc.bottom=4;
+    cmd=0b10011001;
+    test(cmd,&tc);
+    status();
+    
+    /* Leave graphics mode. */
+    gpx_exit(g);
+}
