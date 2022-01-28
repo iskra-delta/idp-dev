@@ -13,8 +13,9 @@ We provide tools and tutorials to developers writing software for the
 We maintain repositories:
 
  * **idp-dev**. This repository.
+ * [idp-sw.](https://github.com/tstih/idp-sw). Sample projects using this SDK.
+ * [idp-games.](https://github.com/mgrcar/idp-games) Games!!!
  * [idp-doc.](https://github.com/tstih/idp-doc) Documentation archive.
- * [idp-games.](https://github.com/mgrcar/idp-games) Games.
 
  > If you'd like to donate old Iskra Delta Partner, Gorenje Dialog 
  > or Triglav hardware, please consider donating to us.
@@ -37,14 +38,6 @@ git clone https://github.com/tstih/idp-dev.git --recurse-submodules
     + [Prerequisites](#prerequisites)
     + [Make](#make)
       - [Other make targets](#other-make-targets)
-  * [Hello World](#hello-world)
-  * [The test framework](#the-test-framework)
-- [Creating Disks Manually](#creating-disks-manually)
-  * [How to create a hard drive?](#how-to-create-a-hard-drive-)
-  * [How to create a floppy drive?](#how-to-create-a-floppy-drive-)
-  * [How to add local files to disk?](#how-to-add-local-files-to-disk-)
-  * [How to remove files from disk?](#how-to-remove-files-from-disk-)
-- [The Emulator](#the-emulator)
 
 # The SDK
 
@@ -101,8 +94,7 @@ we don't have a test environment, and we're waiting for more advanced emulation 
 
 ### Prerequisites
 
-At present, the build environment is *Linux* with the following tools installed: 
-`sdcc,` `cpmtools,` `gcc,` and `sed.` 
+At present, the build environment is *Linux* with `sdcc` compiler suite installed. 
 
  > The *Standard C Library* requires the latest version of *SDCC* (**4.1.6**). 
  > You are going to have to [build it from the sources]
@@ -117,93 +109,16 @@ Compile everything with
 
 `make`
 
-After you are done compiling, create a disk image for the emulator with
+This compiles libraries and creates the `sdk/` directory with `.lib` files, 
+`.h` files, and a hello world sample with its' `Makefile`.
 
-`make install`
+ > The "Hello World" sample prints **Hello world!**. It links all 
+ > existing IDP libraries so you can use it as a starting point 
+ > for your own project.
 
-All output will go to the `build` folder. Disk image that you 
-can import into the Partner emulator (using **Alt+O**) is called `fddb.img`.
+`make libs`
 
-#### Other make targets
-
-For comfortable work, you can also use the following targets. Each
-of them creates a `bin` folder copies the `.com,` `.lib` and `crt0cpm.rel` 
-files into it. And then creates an image of the floppy disk called 
-`fddb.img` with all the `.com` files to the floppy image, 
-   
-
- * `make install` Create the `bin` folder and standard floppy (with `.com` files).
- * `make ccp` Add `ccp.com` to the floppy. CP/M allows programs to overwrite its'
-   command shell called the CCP. When the program ends, the CP/M reloads the shell
-   and, if not present on the disk, displays an error (prompts for disk change). 
- * `make boot` Uses a bootable floppy for *std. partner* as a base for creating
-   the disk image. 
- * `make bootg` Uses a bootable floppy for *graphical partner* as a base for
-   creating the disk image
- * `make dex` Calls `make install` and copies the floppy image to a user
-   folder (`~/Dex/`). Use this if you work in *Linux* and need to exchange 
-   the image with another environment (i.e., a *Windows* where the emulator
-   is running). *In case you wonder, dex stands for Data EXchange.*
-
-## Hello World
-
-If you want to add and compile **your program**, please consult 
-the `test/hello` sample inside this repository and the 
-[libcpm3-z80](https://github.com/tstih/libcpm3-z80) documentation.
-
-The "Hello World" sample does what every **Hello World** program in the world 
-should do. It prints **Hello world!**
-
-## The test framework
-
-Automated unit tests use the [tiny test framework of Eric Radman](https://eradman.com/posts/tdd-in-c.html), 
-based on [the original MinUnit by John Brewer](http://www.jera.com/techinfo/jtns/jtn002.html). 
-The name of automated unit tests ends in `-test` (i.e. `std-test.com`).
-
-# Creating Disks Manually
-
-If you want to create custom Partner disks, we've prepared the necessary 
-definitions for you to use with the `cpmtools` package.
-
-You can download the package from here.
-
-http://www.moria.de/~michael/cpmtools/
-
-Disk definitions for Partner floppy and hard drives are in
-the `scripts\diskdefs` file.
- * `idpfdd` for floppy drive
- * `idphdd` for the hard disk
-
-## How to create a hard drive?
-
-Note: `-f` is disk format and can be `idphdd` or `idpfdd`.
-
-`mkfs.cpm.exe -f idphdd -t hdda.img`
-
-## How to create a floppy drive?
-
-`mkfs.cpm.exe -f idpfdd -t fddb.img`
-
-## How to add local files to disk?
-
-Following command adds file `hello.com` to area 0: of floppy drive `fddb.img`.
-
-`cpmcp -f idpfdd fddb.img test.com 0:test.com`
-
-## How to remove files from disk?
-
-`cpmrm -f idpfdd fddb.img 0:test.com`
-
-# The Emulator
-
-You can download the emulator from here.
-
-http://matejhorvat.si/sl/slorac/delta/partner/index.htm
-
-Inside the emulator, press Alt+O to attach your disk image. 
-The emulator maps the attached disk as `B:` drive.
-
-![Hello World](doc/img/hello.jpg)
+Compile only libraries and copy them to the `bin` directory.
 
 [language.url]:   https://en.wikipedia.org/wiki/ANSI_C
 [language.badge]: https://img.shields.io/badge/language-C-blue.svg
