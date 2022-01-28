@@ -1,12 +1,13 @@
 /*
  * hello.c
  *
- * Prints 'Hello Partner!'
+ * 'Hello world!' SDK sample for 
+ * Iskra Delta Partner.
  * 
  * MIT License (see: LICENSE)
- * copyright (c) 2021 tomaz stih
+ * copyright (c) 2022 Tomaz Stih
  *
- * 02.05.2021   tstih
+ * 22.01.2022	tstih
  *
  */
 #include <stdio.h>
