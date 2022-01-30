@@ -18,6 +18,7 @@
 #include <partner/conio.h>
 #include <partner/bcd.h>
 #include <partner/sysinfo.h>
+#include <partner/smem.h>
 #include <partner/vect.h>
 #include <partner/mouse.h>
 
