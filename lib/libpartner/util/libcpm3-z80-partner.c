@@ -23,10 +23,14 @@
 
 /* initialize partner library, called from the standard library! */
 extern void _init_conio();
+extern void _init_smem();
 void libinit() {
 
     /* Change newline type to DOS. */
     nltype=NL_LFCR;
+
+    /* Initilize shared memory. */
+    _init_smem();
 
     /* Initialize console. */
     _init_conio();
