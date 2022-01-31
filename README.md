@@ -20,6 +20,7 @@ We maintain repositories:
 Additional Partner resources:
  * [Iskra Delta Partner ROMs](https://github.com/rihardgDev/Iskra-Delta-Partner-ROM)
  * [Iskra Delta Partner Emulator](http://matejhorvat.si/sl/slorac/delta/partner/index.htm)
+ * [The PARTNER (Part Time Nerds) Group](https://part-time-nerds.org/)
 
  > If you'd like to donate old Iskra Delta Partner, Gorenje Dialog 
  > or Triglav hardware, please consider donating to us.
