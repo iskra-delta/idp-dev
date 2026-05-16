@@ -1,5 +1,7 @@
 ![status.badge] [![language.badge]][language.url] [![standard.badge]][standard.url] [![license.badge]][license.url]
 
+This repository is no longer maintain. Please use [idp-sdk](https://github.com/iskra-delta/idp-sdk) instead.
+
 # idp-dev
 
 Welcome to the **idp-dev**, the Iskra Delta Partner SDK. 
